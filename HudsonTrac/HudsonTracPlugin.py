@@ -191,8 +191,7 @@ class HudsonTracPlugin(Component):
             completed = started + get_number(entry, 'duration')
             started /= 1000
             completed /= 1000
-
-            author = get_string(entry, 'fullName')
+            
             result = get_string(entry, 'result')
             message, kind = {
                 'SUCCESS': ('Build finished successfully',
@@ -205,11 +204,18 @@ class HudsonTracPlugin(Component):
             if self.use_desc:
                 message = get_string(entry, 'description') or message
 
-            comment = "%s at %s, duration %s" % (
-                          message, format_datetime(completed),
-                          pretty_timedelta(started, completed))
-            href  = get_string(entry, 'url')
-            title = 'Build "%s" (%s)' % (get_string(entry, 'fullDisplayName'),
-                                         result.lower())
+            author = get_string(entry, 'fullName')
+            data = (get_string(entry, 'fullDisplayName'),
+                    get_string(entry, 'url'),
+                    result, message, started, completed)
+            yield kind, completed, author, data
 
-            yield kind, href, title, completed, author, comment
+    def render_timeline_event(self, context, field, event):
+        name, url, result, message, started, completed = event[3]
+        if field == 'title':
+            return tag('Build "', tag.em(name), '" (%s)' % result.lower())
+        elif field == 'description':
+            return "%s duration %s" % \
+                   (message, pretty_timedelta(started, completed))
+        elif field == 'url':
+            return url
