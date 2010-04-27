@@ -94,9 +94,9 @@ class HudsonTracPlugin(Component):
                          '[timestamp>=%(start)s][timestamp<=%(stop)s]')
                 depth += 1
 
-        self.info_url = ('%s?xpath=%s&depth=%s&exclude='
-                         '//action|//artifact|//changeSet|'
-                         '//culprit&wrapper=builds' %
+        self.info_url = ('%s?xpath=%s&depth=%s'
+                         '&exclude=//action|//artifact|//changeSet'
+                         '&wrapper=builds' %
                          (api_url.replace('%', '%%'), path, depth))
 
         self.env.log.debug("Build-info url: '%s'", self.info_url)
@@ -192,6 +192,7 @@ class HudsonTracPlugin(Component):
             started /= 1000
             completed /= 1000
 
+            author = get_string(entry, 'fullName')
             result = get_string(entry, 'result')
             message, kind = {
                 'SUCCESS': ('Build finished successfully',
@@ -211,4 +212,4 @@ class HudsonTracPlugin(Component):
             title = 'Build "%s" (%s)' % (get_string(entry, 'fullDisplayName'),
                                          result.lower())
 
-            yield kind, href, title, completed, None, comment
+            yield kind, href, title, completed, author, comment
