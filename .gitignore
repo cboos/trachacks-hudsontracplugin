@@ -3,4 +3,5 @@ HudsonTrac.egg-info
 .svn
 *~
 *.bak
+*.patch
 *.mo

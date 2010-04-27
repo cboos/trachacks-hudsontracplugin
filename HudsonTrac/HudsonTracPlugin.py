@@ -66,6 +66,8 @@ class HudsonTracPlugin(Component):
         Whether to display the build descriptions for each build
         instead of the canned "Build finished successfully etc."
         messages.""")
+    display_building = BoolOption('hudson', 'display_building', False,
+        'Also show in-progress builds (pulsating green ball)')
 
     def __init__(self):
         # i18n
@@ -105,9 +107,9 @@ class HudsonTracPlugin(Component):
                          '[timestamp>=%(start)s][timestamp<=%(stop)s]')
                 depth += 1
 
-        self.info_url = ('%s?xpath=%s&depth=%s&exclude='
-                         '//action|//artifact|//changeSet|'
-                         '//culprit&wrapper=builds' %
+        self.info_url = ('%s?xpath=%s&depth=%s'
+                         '&exclude=//action|//artifact|//changeSet'
+                         '&wrapper=builds' %
                          (api_url.replace('%', '%%'), path, depth))
 
         self.env.log.debug("Build-info url: '%s'", self.info_url)
@@ -194,32 +196,44 @@ class HudsonTracPlugin(Component):
         for entry in info.documentElement.getElementsByTagName("build"):
             # ignore builds that are still running
             if get_string(entry, 'building') == 'true':
-                continue
+                if not self.display_building:
+                    continue
+                else:
+                    result = 'INPROGRESS'
+            else:
+                result = get_string(entry, 'result')
 
             # create timeline entry
             started = get_number(entry, 'timestamp')
             completed = started + get_number(entry, 'duration')
             started /= 1000
             completed /= 1000
-
-            result = get_string(entry, 'result')
+            
             message, kind = {
                 'SUCCESS': (_('Build finished successfully'),
                             ('build-successful',
                              'build-successful-alt')[self.alt_succ]),
                 'UNSTABLE': (_('Build unstable'), 'build-unstable'),
                 'ABORTED': (_('Build aborted'), 'build-aborted'),
+                'INPROGRESS': (_('Build in progress'), 'build-inprogress'),
                 }.get(result, (_('Build failed'), 'build-failed'))
 
             if self.use_desc:
                 message = get_string(entry, 'description') or message
 
-            comment = _("%(message)s after %(elapsed)s",
-                        message=message,
-                        elapsed=pretty_timedelta(started, completed))
-            href  = get_string(entry, 'url')
-            title = tag_('Build %(name)s (%(result)s)',
-                         name=tag.em(get_string(entry, 'fullDisplayName')),
-                         result=result.lower())
+            author = get_string(entry, 'fullName')
+            data = (get_string(entry, 'fullDisplayName'),
+                    get_string(entry, 'url'),
+                    result, message, started, completed)
+            yield kind, completed, author, data
 
-            yield kind, href, title, completed, None, comment
+    def render_timeline_event(self, context, field, event):
+        name, url, result, message, started, completed = event[3]
+        if field == 'title':
+            title = tag_('Build %(name)s (%(result)s)',
+                         name=tag.em(name), result=result.lower())
+        elif field == 'description':
+            return _("%(message)s after %(elapsed)s", message=message,
+                     elapsed=pretty_timedelta(started, completed))
+        elif field == 'url':
+            return url
