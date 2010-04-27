@@ -16,6 +16,8 @@ import urllib2
 from xml.dom import minidom
 from datetime import datetime
 
+from pkg_resources import resource_filename
+
 from genshi.builder import tag
 
 from trac.core import *
@@ -23,12 +25,15 @@ from trac.config import Option, BoolOption
 from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime, pretty_timedelta, to_timestamp
 from trac.util.text import unicode_quote
+from trac.util.translation import domain_functions
 from trac.web.chrome import INavigationContributor, ITemplateProvider, add_stylesheet
 from trac.timeline.api import ITimelineEventProvider
 
+add_domain, _, tag_ = domain_functions('hudsontrac', 'add_domain', '_', 'tag_')
 
 class HudsonTracPlugin(Component):
-    """Display Hudson results in the timeline and an entry in the main navigation bar.
+    """Display Hudson results in the timeline and an entry in the main
+    navigation bar.
     """
     
     implements(INavigationContributor, ITimelineEventProvider,
@@ -63,6 +68,12 @@ class HudsonTracPlugin(Component):
         messages.""")
 
     def __init__(self):
+        # i18n
+        add_domain(self.env.path, resource_filename(__name__, 'locale'))
+        self.log.info("Added domain 'hudsontrac' -> %s",
+                      resource_filename(__name__, 'locale'))
+
+        # prepare self.info_url
         api_url = unicode_quote(self.job_url, '/%:@')
         if api_url and api_url[-1] != '/':
             api_url += '/'
@@ -113,7 +124,7 @@ class HudsonTracPlugin(Component):
 
     def get_navigation_items(self, req):
         if self.nav_url and req.perm.has_permission('BUILD_VIEW'):
-            yield 'mainnav', 'builds', tag.a("Build", href=self.nav_url,
+            yield 'mainnav', 'builds', tag.a(_("Build"), href=self.nav_url,
                                  target=self.disp_tab and "hudson" or None)
 
     # ITemplateProvider methods
@@ -124,14 +135,13 @@ class HudsonTracPlugin(Component):
                 self.config.get('trac', 'templates_dir')]
 
     def get_htdocs_dirs(self):
-        from pkg_resources import resource_filename
         return [('HudsonTrac', resource_filename(__name__, 'htdocs'))]
 
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
         if 'BUILD_VIEW' in req.perm:
-            yield ('build', 'Hudson Builds')
+            yield ('build', _('Hudson Builds'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'build' not in filters or 'BUILD_VIEW' not in req.perm:
@@ -194,21 +204,22 @@ class HudsonTracPlugin(Component):
 
             result = get_string(entry, 'result')
             message, kind = {
-                'SUCCESS': ('Build finished successfully',
+                'SUCCESS': (_('Build finished successfully'),
                             ('build-successful',
                              'build-successful-alt')[self.alt_succ]),
-                'UNSTABLE': ('Build unstable', 'build-unstable'),
-                'ABORTED': ('Build aborted', 'build-aborted'),
-                }.get(result, ('Build failed', 'build-failed'))
+                'UNSTABLE': (_('Build unstable'), 'build-unstable'),
+                'ABORTED': (_('Build aborted'), 'build-aborted'),
+                }.get(result, (_('Build failed'), 'build-failed'))
 
             if self.use_desc:
                 message = get_string(entry, 'description') or message
 
-            comment = "%s at %s, duration %s" % (
-                          message, format_datetime(completed),
-                          pretty_timedelta(started, completed))
+            comment = _("%(message)s after %(elapsed)s",
+                        message=message,
+                        elapsed=pretty_timedelta(started, completed))
             href  = get_string(entry, 'url')
-            title = 'Build "%s" (%s)' % (get_string(entry, 'fullDisplayName'),
-                                         result.lower())
+            title = tag_('Build %(name)s (%(result)s)',
+                         name=tag.em(get_string(entry, 'fullDisplayName')),
+                         result=result.lower())
 
             yield kind, href, title, completed, None, comment
