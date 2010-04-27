@@ -235,8 +235,8 @@ class HudsonTracPlugin(Component):
     def render_timeline_event(self, context, field, event):
         name, url, result, message, started, completed = event[3]
         if field == 'title':
-            title = tag_('Build %(name)s (%(result)s)',
-                         name=tag.em(name), result=result.lower())
+            return tag_('Build %(name)s (%(result)s)', name=tag.em(name),
+                        result=result.lower())
         elif field == 'description':
             return _("%(message)s after %(elapsed)s", message=message,
                      elapsed=pretty_timedelta(started, completed))
