@@ -233,12 +233,18 @@ class HudsonTracPlugin(Component):
             yield kind, completed, author, data
 
     def render_timeline_event(self, context, field, event):
-        name, url, result, message, started, completed = event[3]
+        kind, completed, author, data = event
+        name, url, result, message, started, completed = data
         if field == 'title':
             return tag_('Build %(name)s (%(result)s)', name=tag.em(name),
                         result=result.lower())
         elif field == 'description':
-            return _("%(message)s after %(elapsed)s", message=message,
-                     elapsed=pretty_timedelta(started, completed))
+            elapsed = pretty_timedelta(started, completed)
+            if kind == 'build-inprogress':
+                return _("%(message)s since %(elapsed)s", message=message,
+                         elapsed=elapsed)
+            else:
+                return _("%(message)s after %(elapsed)s", message=message,
+                         elapsed=elapsed)
         elif field == 'url':
             return url
