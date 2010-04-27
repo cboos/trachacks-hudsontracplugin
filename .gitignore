@@ -3,3 +3,5 @@ HudsonTrac.egg-info
 .svn
 *~
 *.bak
+*.patch
+locale
