@@ -61,6 +61,8 @@ class HudsonTracPlugin(Component):
         Whether to display the build descriptions for each build
         instead of the canned "Build finished successfully etc."
         messages.""")
+    display_building = BoolOption('hudson', 'display_building', False,
+        'Also show in-progress builds (pulsating green ball)')
 
     def __init__(self):
         api_url = unicode_quote(self.job_url, '/%:@')
@@ -184,7 +186,12 @@ class HudsonTracPlugin(Component):
         for entry in info.documentElement.getElementsByTagName("build"):
             # ignore builds that are still running
             if get_string(entry, 'building') == 'true':
-                continue
+                if not self.display_building:
+                    continue
+                else:
+                    result = 'INPROGRESS'
+            else:
+                result = get_string(entry, 'result')
 
             # create timeline entry
             started = get_number(entry, 'timestamp')
@@ -192,13 +199,13 @@ class HudsonTracPlugin(Component):
             started /= 1000
             completed /= 1000
             
-            result = get_string(entry, 'result')
             message, kind = {
                 'SUCCESS': ('Build finished successfully',
                             ('build-successful',
                              'build-successful-alt')[self.alt_succ]),
                 'UNSTABLE': ('Build unstable', 'build-unstable'),
                 'ABORTED': ('Build aborted', 'build-aborted'),
+                'INPROGRESS': ('Build in progress', 'build-inprogress'),
                 }.get(result, ('Build failed', 'build-failed'))
 
             if self.use_desc:

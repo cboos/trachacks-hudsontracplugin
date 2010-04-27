@@ -3,3 +3,4 @@ dt.build-successful-alt a { background-image: url(success-alt.gif) !important }
 dt.build-failed a         { background-image: url(failed.gif)      !important }
 dt.build-aborted a        { background-image: url(aborted.gif)     !important }
 dt.build-unstable a       { background-image: url(unstable.gif)    !important }
+dt.build-inprogress a     { background-image: url(inprogress.gif)  !important }
