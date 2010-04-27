@@ -186,18 +186,23 @@ class HudsonTracPlugin(Component):
         for entry in info.documentElement.getElementsByTagName("build"):
             # ignore builds that are still running
             if get_string(entry, 'building') == 'true':
-                if not self.display_building:
-                    continue
-                else:
+                if self.display_building:
                     result = 'INPROGRESS'
+                else:
+                    continue
             else:
                 result = get_string(entry, 'result')
 
             # create timeline entry
             started = get_number(entry, 'timestamp')
-            completed = started + get_number(entry, 'duration')
+            if result == 'INPROGRESS':
+                # we hope the clocks are close...
+                completed = time.time()
+            else:
+                duration = get_number(entry, 'duration')
+                completed = started + duration
+                completed /= 1000
             started /= 1000
-            completed /= 1000
             
             message, kind = {
                 'SUCCESS': ('Build finished successfully',
