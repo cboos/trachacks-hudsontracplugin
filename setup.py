@@ -20,9 +20,13 @@ setup(
     version = '0.12.0.4',
     author = "Ronald Tschalär",
     description = "Trac Plugin which adds Hudson build events to the timeline",
+    maintainer = "Christian Boos",
     license = "BSD",
     keywords = "trac builds hudson",
-    url = "http://trac-hacks.org/wiki/HudsonTracPlugin",
+    # use this to report bugs to 0.11 and 0.12 branches of this plugin:
+    url = "http://github.com/cboos/trachacks-hudsontracplugin",
+    # original was:
+    #url = "http://trac-hacks.org/wiki/HudsonTracPlugin",
 
     packages = ['HudsonTrac'],
     package_data = {
