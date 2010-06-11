@@ -1,1 +1,30 @@
-<html><body>Nothing to see yet ;-)</body></html>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+  <xi:include href="layout.html" />
+  <head>
+    <title>Hudson Build Summary</title>
+  </head>
+  <body>
+    <div id="content" class="timeline">
+      <h1>Hudson Build Summary</h1>
+      <py:for each="project, builds in groupby(builds, key=lambda b: b.module)">
+        <h2>Recent builds for: ${project}</h2>
+        <ul class="builds">
+          <py:for each="b in builds">
+            <li class="${b.kind}">
+              <a href="${b.url}" title="${format_datetime(b.started)}"></a>
+            </li>
+          </py:for>
+        </ul>
+      </py:for>
+    </div>
+    <div id="help" i18n:msg="">
+        <strong>Note:</strong> Most recent builds are on the left side.
+    </div>
+  </body>
+</html>

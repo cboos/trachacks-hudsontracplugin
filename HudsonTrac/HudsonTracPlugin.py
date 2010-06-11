@@ -14,7 +14,7 @@ See also:
 import time
 import urllib2
 from xml.dom import minidom
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pkg_resources import resource_filename
 
@@ -31,6 +31,10 @@ from trac.web.chrome import INavigationContributor, ITemplateProvider, \
 from trac.timeline.api import ITimelineEventProvider
 
 add_domain, _, tag_ = domain_functions('hudsontrac', 'add_domain', '_', 'tag_')
+
+class Build(dict):
+    def __getattr__(self, name):
+        return self[name]
 
 class HudsonTracPlugin(Component):
     """Display Hudson results in the timeline and an entry in the main
@@ -115,49 +119,35 @@ class HudsonTracPlugin(Component):
 
         self.env.log.debug("Build-info url: '%s'", self.info_url)
 
-    # IPermissionRequestor methods  
+    def _get_info(self, start, stop):
+        """Retrieve build information from Hudson, in the given period."""
+        start = to_timestamp(start)
+        stop = to_timestamp(stop)
+        url = self.info_url % {'start': start*1000, 'stop': stop*1000}
+        try:
+            try:
+                return minidom.parse(self.url_opener.open(url))
+            except Exception:
+                import sys
+                self.env.log.exception("Error getting build info from '%s'",
+                                       url)
+                raise IOError(
+                    "Error getting build info from '%s': %s: %s. This most " \
+                    "likely means you configured a wrong job_url." % \
+                    (url, sys.exc_info()[0].__name__, str(sys.exc_info()[1])))
+        finally:
+            self.url_opener.close()
 
-    def get_permission_actions(self):
-        return ['BUILD_VIEW']
+    def _extract_builds(self, info):
+        """Extract build information from XML retrieved from Hudson.
 
-    # INavigationContributor methods
-
-    def get_active_navigation_item(self, req):
-        return 'builds'
-
-    def get_navigation_items(self, req):
-        if req.perm.has_permission('BUILD_VIEW'):
-            yield ('mainnav', 'builds',
-                   tag.a(_("Build"),
-                         href=self.nav_url or req.href('hudson-build'),
-                         target=self.disp_tab and 'hudson' or None))
-
-    # ITemplateProvider methods
-
-    def get_templates_dirs(self):
-        return [resource_filename(__name__, 'templates')]
-
-    def get_htdocs_dirs(self):
-        return [('HudsonTrac', resource_filename(__name__, 'htdocs'))]
-
-    # IRequestHandler methods
-
-    def match_request(self, req):
-        return req.path_info.startswith('/hudson-build')
-
-    def process_request(self, req):
-        data = {}
-        return 'hudson-build.html', data, None
-
-    # ITimelineEventProvider methods
-
-    def get_timeline_filters(self, req):
-        if 'BUILD_VIEW' in req.perm:
-            yield ('build', _('Hudson Builds'))
-
-    def get_timeline_events(self, req, start, stop, filters):
-        if 'build' not in filters or 'BUILD_VIEW' not in req.perm:
-            return
+        Returns a list of build dicts.
+        """
+        if info.documentElement.nodeName != 'builds':
+            raise IOError(
+                "Error getting build info from '%s': returned document has "
+                "unexpected node '%s'. This most likely means you configured "
+                "a wrong job_url" % (info_url, info.documentElement.nodeName))
 
         # xml parsing helpers
         def get_text(node):
@@ -174,33 +164,6 @@ class HudsonTracPlugin(Component):
         def get_number(parent, child):
             num = get_string(parent, child)
             return num and int(num) or 0
-
-        start = to_timestamp(start)
-        stop = to_timestamp(stop)
-
-        # get and parse the build-info
-        url = self.info_url % {'start': start*1000, 'stop': stop*1000}
-        try:
-            try:
-                info = minidom.parse(self.url_opener.open(url))
-            except Exception:
-                import sys
-                self.env.log.exception("Error getting build info from '%s'",
-                                       url)
-                raise IOError(
-                    "Error getting build info from '%s': %s: %s. This most " \
-                    "likely means you configured a wrong job_url." % \
-                    (url, sys.exc_info()[0].__name__, str(sys.exc_info()[1])))
-        finally:
-            self.url_opener.close()
-
-        if info.documentElement.nodeName != 'builds':
-            raise IOError(
-                "Error getting build info from '%s': returned document has "
-                "unexpected node '%s'. This most likely means you configured "
-                "a wrong job_url" % (info_url, info.documentElement.nodeName))
-
-        add_stylesheet(req, 'HudsonTrac/hudsontrac.css')
 
         # extract all build entries
         for entry in info.documentElement.getElementsByTagName("build"):
@@ -236,25 +199,82 @@ class HudsonTracPlugin(Component):
             if self.use_desc:
                 message = get_string(entry, 'description') or message
 
-            author = get_string(entry, 'fullName')
-            data = (get_string(entry, 'fullDisplayName'),
-                    get_string(entry, 'url'),
-                    result, message, started, completed)
-            yield kind, completed, author, data
+            name = get_string(entry, 'fullDisplayName')
+            module = name[:name.rindex('#')]
+            yield Build(name=name, module=module,
+                        url=get_string(entry, 'url'),
+                        author=get_string(entry, 'fullName'),
+                        result=result, message=message, started=started, 
+                        completed=completed, kind=kind)
+
+    # IPermissionRequestor methods  
+
+    def get_permission_actions(self):
+        return ['BUILD_VIEW']
+
+    # INavigationContributor methods
+
+    def get_active_navigation_item(self, req):
+        return 'builds'
+
+    def get_navigation_items(self, req):
+        if req.perm.has_permission('BUILD_VIEW'):
+            yield ('mainnav', 'builds',
+                   tag.a(_("Build"),
+                         href=self.nav_url or req.href('hudson-build'),
+                         target=self.disp_tab and 'hudson' or None))
+
+    # ITemplateProvider methods
+
+    def get_templates_dirs(self):
+        return [resource_filename(__name__, 'templates')]
+
+    def get_htdocs_dirs(self):
+        return [('HudsonTrac', resource_filename(__name__, 'htdocs'))]
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return req.path_info.startswith('/hudson-build')
+
+    def process_request(self, req):
+        stop = datetime.now(req.tz)
+        start = stop - timedelta(days=30)
+        builds = self._extract_builds(self._get_info(start, stop))
+        data = {'builds': builds}
+        add_stylesheet(req, 'HudsonTrac/hudsontrac.css')
+        return 'hudson-build.html', data, None
+
+    # ITimelineEventProvider methods
+
+    def get_timeline_filters(self, req):
+        if 'BUILD_VIEW' in req.perm:
+            yield ('build', _('Hudson Builds'))
+
+    def get_timeline_events(self, req, start, stop, filters):
+        if 'build' not in filters or 'BUILD_VIEW' not in req.perm:
+            return
+
+        add_stylesheet(req, 'HudsonTrac/hudsontrac.css')
+
+        # get and parse the build-info
+        info = self._get_info(start, stop)
+        for b in self._extract_builds(info):
+            self.log.debug("Build: %r", b)
+            yield b.kind, b.completed, b.author, b
 
     def render_timeline_event(self, context, field, event):
-        kind, completed, author, data = event
-        name, url, result, message, started, completed = data
+        b = event[3]
         if field == 'title':
-            return tag_('Build %(name)s (%(result)s)', name=tag.em(name),
-                        result=result.lower())
+            return tag_('Build %(name)s (%(result)s)', name=tag.em(b.name),
+                        result=b.result.lower())
         elif field == 'description':
-            elapsed = pretty_timedelta(started, completed)
-            if kind == 'build-inprogress':
-                return _("%(message)s since %(elapsed)s", message=message,
+            elapsed = pretty_timedelta(b.started, b.completed)
+            if b.kind == 'build-inprogress':
+                return _("%(message)s since %(elapsed)s", message=b.message,
                          elapsed=elapsed)
             else:
-                return _("%(message)s after %(elapsed)s", message=message,
+                return _("%(message)s after %(elapsed)s", message=b.message,
                          elapsed=elapsed)
         elif field == 'url':
-            return url
+            return b.url

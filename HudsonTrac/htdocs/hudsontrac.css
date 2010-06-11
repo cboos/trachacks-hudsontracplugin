@@ -1,6 +1,23 @@
-dt.build-successful a     { background-image: url(success.gif)     !important }
-dt.build-successful-alt a { background-image: url(success-alt.gif) !important }
-dt.build-failed a         { background-image: url(failed.gif)      !important }
-dt.build-aborted a        { background-image: url(aborted.gif)     !important }
-dt.build-unstable a       { background-image: url(unstable.gif)    !important }
-dt.build-inprogress a     { background-image: url(inprogress.gif)  !important }
+.build-successful a     { background-image: url(success.gif)     !important }
+.build-successful-alt a { background-image: url(success-alt.gif) !important }
+.build-failed a         { background-image: url(failed.gif)      !important }
+.build-aborted a        { background-image: url(aborted.gif)     !important }
+.build-unstable a       { background-image: url(unstable.gif)    !important }
+.build-inprogress a     { background-image: url(inprogress.gif)  !important }
+
+ul.builds {
+ list-style: none;
+}
+ul.builds li {
+ display: inline;
+}
+ul.builds li {
+ line-height: 20px;
+ margin-right: 2px;
+/* border: 1px solid blue; */
+}
+ul.builds li a {
+ display: inline;
+ background-repeat: no-repeat;
+ padding: 0 14px 0 0;
+}
