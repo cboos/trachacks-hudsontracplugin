@@ -26,7 +26,8 @@ from trac.perm import IPermissionRequestor
 from trac.util.datefmt import format_datetime, pretty_timedelta, to_timestamp
 from trac.util.text import unicode_quote
 from trac.util.translation import domain_functions
-from trac.web.chrome import INavigationContributor, ITemplateProvider, add_stylesheet
+from trac.web.chrome import INavigationContributor, ITemplateProvider, \
+                            IRequestHandler, add_stylesheet
 from trac.timeline.api import ITimelineEventProvider
 
 add_domain, _, tag_ = domain_functions('hudsontrac', 'add_domain', '_', 'tag_')
@@ -37,7 +38,7 @@ class HudsonTracPlugin(Component):
     """
     
     implements(INavigationContributor, ITimelineEventProvider,
-               ITemplateProvider, IPermissionRequestor)
+               ITemplateProvider, IPermissionRequestor, IRequestHandler)
 
     disp_mod = BoolOption('hudson', 'display_modules', False, """
  	Display status of modules in the timeline too.
@@ -56,7 +57,7 @@ class HudsonTracPlugin(Component):
         'The password to use to access hudson')
     nav_url  = Option('hudson', 'main_page', '/hudson/', """
         The url of the hudson main page to which the trac nav entry
-        should link; if empty, no entry is created in the nav bar.
+        should link; if empty, this will lead to our own summary page.
         This may be a relative url.""")
     disp_tab = BoolOption('hudson', 'display_in_new_tab', False,
         'Open hudson page in new tab/window')
@@ -125,9 +126,11 @@ class HudsonTracPlugin(Component):
         return 'builds'
 
     def get_navigation_items(self, req):
-        if self.nav_url and req.perm.has_permission('BUILD_VIEW'):
-            yield 'mainnav', 'builds', tag.a(_("Build"), href=self.nav_url,
-                                 target=self.disp_tab and "hudson" or None)
+        if req.perm.has_permission('BUILD_VIEW'):
+            yield ('mainnav', 'builds',
+                   tag.a(_("Build"),
+                         href=self.nav_url or req.href('hudson-build'),
+                         target=self.disp_tab and 'hudson' or None))
 
     # ITemplateProvider methods
 
@@ -136,6 +139,15 @@ class HudsonTracPlugin(Component):
 
     def get_htdocs_dirs(self):
         return [('HudsonTrac', resource_filename(__name__, 'htdocs'))]
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return req.path_info.startswith('/hudson-build')
+
+    def process_request(self, req):
+        data = {}
+        return 'hudson-build.html', data, None
 
     # ITimelineEventProvider methods
 
