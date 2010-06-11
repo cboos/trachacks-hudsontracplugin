@@ -132,9 +132,7 @@ class HudsonTracPlugin(Component):
     # ITemplateProvider methods
 
     def get_templates_dirs(self):
-        return []
-        return [self.env.get_templates_dir(),
-                self.config.get('trac', 'templates_dir')]
+        return [resource_filename(__name__, 'templates')]
 
     def get_htdocs_dirs(self):
         return [('HudsonTrac', resource_filename(__name__, 'htdocs'))]
