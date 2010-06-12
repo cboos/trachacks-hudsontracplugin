@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: HudsonTrac 0.12.0.4\n"
 "Report-Msgid-Bugs-To: cboos@neuf.fr\n"
 "POT-Creation-Date: 2010-04-27 11:35+0200\n"
-"PO-Revision-Date: 2010-06-12 20:08+0200\n"
+"PO-Revision-Date: 2010-06-12 20:18+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -66,8 +66,9 @@ msgid "Hudson Build Summary"
 msgstr "Hudson Builds : Synthèse"
 
 #: HudsonTrac/templates/hudson-build.html:17
-msgid "Recent builds for:"
-msgstr "Build récents pour :"
+#, python-format
+msgid "Recent builds for: %(project)s"
+msgstr "Build récents pour « %(project)s »"
 
 #: HudsonTrac/templates/hudson-build.html:27
 msgid "[1:Note:] Most recent builds are on the left side."

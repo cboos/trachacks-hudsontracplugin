@@ -14,7 +14,7 @@
     <div id="content" class="timeline">
       <h1>Hudson Build Summary</h1>
       <py:for each="project, builds in groupby(builds, key=lambda b: b.module)">
-        <h2>Recent builds for: ${project}</h2>
+        <h2 i18n:msg="project">Recent builds for: ${project}</h2>
         <ul class="builds">
           <py:for each="b in builds">
             <li class="${b.kind}">
