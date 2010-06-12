@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: HudsonTrac 0.12.0.4\n"
 "Report-Msgid-Bugs-To: cboos@neuf.fr\n"
 "POT-Creation-Date: 2010-04-27 11:35+0200\n"
-"PO-Revision-Date: 2010-04-27 18:29+0200\n"
+"PO-Revision-Date: 2010-06-12 19:50+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -17,46 +17,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
 
-#: HudsonTrac/HudsonTracPlugin.py:129
-msgid "Build"
-msgstr ""
-
-#: HudsonTrac/HudsonTracPlugin.py:146
-msgid "Hudson Builds"
-msgstr ""
-
-#: HudsonTrac/HudsonTracPlugin.py:218
+#: HudsonTrac/HudsonTracPlugin.py:191
 msgid "Build finished successfully"
 msgstr "Le build a réussi"
 
-#: HudsonTrac/HudsonTracPlugin.py:221
+#: HudsonTrac/HudsonTracPlugin.py:194
 msgid "Build unstable"
 msgstr "Le build est instable"
 
-#: HudsonTrac/HudsonTracPlugin.py:222
+#: HudsonTrac/HudsonTracPlugin.py:195
 msgid "Build aborted"
 msgstr "Le build a été interrompu"
 
-#: HudsonTrac/HudsonTracPlugin.py:223
+#: HudsonTrac/HudsonTracPlugin.py:196
 msgid "Build in progress"
 msgstr "Le build a démarré"
 
-#: HudsonTrac/HudsonTracPlugin.py:224
+#: HudsonTrac/HudsonTracPlugin.py:197
 msgid "Build failed"
 msgstr "Le build a échoué"
 
-#: HudsonTrac/HudsonTracPlugin.py:240
+#: HudsonTrac/HudsonTracPlugin.py:223
+msgid "Build"
+msgstr "Build"
+
+#: HudsonTrac/HudsonTracPlugin.py:252
+msgid "Hudson Builds"
+msgstr "Hudson Builds"
+
+#: HudsonTrac/HudsonTracPlugin.py:270
 #, python-format
 msgid "Build %(name)s (%(result)s)"
 msgstr "Build « %(name)s » (%(result)s)"
 
-#: HudsonTrac/HudsonTracPlugin.py:244
+#: HudsonTrac/HudsonTracPlugin.py:274
 #, python-format
 msgid "%(message)s since %(elapsed)s"
 msgstr "%(message)s depuis %(elapsed)s"
 
-#: HudsonTrac/HudsonTracPlugin.py:247
+#: HudsonTrac/HudsonTracPlugin.py:277
 #, python-format
 msgid "%(message)s after %(elapsed)s"
 msgstr "%(message)s au bout de %(elapsed)s"
+
+#: HudsonTrac/templates/hudson-build.html:10
+#: HudsonTrac/templates/hudson-build.html:14
+msgid "Hudson Build Summary"
+msgstr "Hudson Builds : Synthèse"
+
+#: HudsonTrac/templates/hudson-build.html:16
+msgid "Recent builds for:"
+msgstr "Build récents pour :"
+
+#: HudsonTrac/templates/hudson-build.html:26
+msgid "[1:Note:] Most recent builds are on the left side."
+msgstr "[1:Note :] Les buils les plus récents sont sur le côté gauche."
 
