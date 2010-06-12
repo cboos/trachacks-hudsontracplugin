@@ -5,16 +5,17 @@ from setuptools import setup
 
 extra = {}
 
-try:
-    import babel
+from trac.util.dist import get_l10n_cmdclass
+cmdclass = get_l10n_cmdclass()
+if cmdclass:
+    extra['cmdclass'] = cmdclass
     extra['message_extractors'] = {
         'HudsonTrac': [
             ('*.py', 'python', None),
+            ('templates/*.html', 'genshi', None),
         ],
     }
-except ImportError:
-    pass
-                
+
 setup(
     name = 'HudsonTrac',
     version = '0.12.0.4',
