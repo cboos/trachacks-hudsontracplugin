@@ -34,8 +34,7 @@ setup(
         'HudsonTrac': [
             'htdocs/*.css', 'htdocs/*.gif', 'htdocs/*.js',
             'templates/*.html',
-            'locale/*.*', 'locale/*/LC_MESSAGES/*.*',
-            'htdocs/hudsontrac/*.js',
+            'locale/*/LC_MESSAGES/*.mo', 'htdocs/hudsontrac/*.js',
         ],
     },
     entry_points = {
