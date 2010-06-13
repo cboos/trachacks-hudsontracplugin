@@ -48,7 +48,7 @@ msgstr "Hudson Builds"
 #: HudsonTrac/HudsonTracPlugin.py:270
 #, python-format
 msgid "Build %(name)s (%(result)s)"
-msgstr "Build « %(name)s » (%(result)s)"
+msgstr "Build « %(name)s » (%(result)s)"
 
 #: HudsonTrac/HudsonTracPlugin.py:274
 #, python-format
@@ -63,14 +63,14 @@ msgstr "%(message)s au bout de %(elapsed)s"
 #: HudsonTrac/templates/hudson-build.html:11
 #: HudsonTrac/templates/hudson-build.html:15
 msgid "Hudson Build Summary"
-msgstr "Hudson Builds : Synthèse"
+msgstr "Hudson Builds : Synthèse"
 
 #: HudsonTrac/templates/hudson-build.html:17
 #, python-format
 msgid "Recent builds for: %(project)s"
-msgstr "Build récents pour « %(project)s »"
+msgstr "Build récents pour « %(project)s »"
 
 #: HudsonTrac/templates/hudson-build.html:27
 msgid "[1:Note:] Most recent builds are on the left side."
-msgstr "[1:Note :] Les buils les plus récents sont sur le côté gauche."
+msgstr "[1:Note :] Les builds les plus récents sont sur le côté gauche."
 
