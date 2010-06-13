@@ -18,7 +18,7 @@ if cmdclass:
 
 setup(
     name = 'HudsonTrac',
-    version = '0.12.0.4',
+    version = '0.12.0.5',
     author = "Ronald Tschalär",
     description = "Trac Plugin which adds Hudson build events to the timeline",
     maintainer = "Christian Boos",
@@ -31,8 +31,12 @@ setup(
 
     packages = ['HudsonTrac'],
     package_data = {
-        'HudsonTrac' : ['htdocs/*.css', 'htdocs/*.gif',
-                        'locale/*.*', 'locale/*/LC_MESSAGES/*.*'],
+        'HudsonTrac': [
+            'htdocs/*.css', 'htdocs/*.gif', 'htdocs/*.js',
+            'templates/*.html',
+            'locale/*.*', 'locale/*/LC_MESSAGES/*.*',
+            'htdocs/hudsontrac/*.js',
+        ],
     },
     entry_points = {
         'trac.plugins' : [ 'HudsonTrac = HudsonTrac.HudsonTracPlugin' ]
