@@ -7,3 +7,4 @@ HudsonTrac.egg-info
 *.bak
 *.patch
 *.mo
+HudsonTrac/htdocs/hudsontrac

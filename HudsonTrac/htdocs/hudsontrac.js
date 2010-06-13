@@ -23,9 +23,9 @@ jQuery(document).ready(function($) {
               top: parseInt(event.pageY) - 16 + "px"})
         .append($("<p>").text(build.message))
         .append($("<dl>")
-          .append($("<dt>").text("Name:"))
+          .append($("<dt>").text(_("Name:")))
           .append($("<dd>").text(build.name))
-          .append($("<dt>").text("Author:"))
+          .append($("<dt>").text(_("Author:")))
           .append($("<dd>").text(build.author))
         );
     },

@@ -243,6 +243,8 @@ class HudsonTracPlugin(Component):
         builds = self._extract_builds(self._get_info(start, stop))
         data = {'builds': list(builds)}
         add_script(req, 'HudsonTrac/hudsontrac.js')
+        if req.locale is not None:
+            add_script(req, 'HudsonTrac/hudsontrac/%s.js' % req.locale)
         add_stylesheet(req, 'HudsonTrac/hudsontrac.css')
         return 'hudson-build.html', data, None
 

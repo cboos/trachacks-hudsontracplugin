@@ -5,8 +5,8 @@ from setuptools import setup
 
 extra = {}
 
-from trac.util.dist import get_l10n_cmdclass
-cmdclass = get_l10n_cmdclass()
+from trac.util.dist import get_l10n_js_cmdclass
+cmdclass = get_l10n_js_cmdclass()
 if cmdclass:
     extra['cmdclass'] = cmdclass
     extra['message_extractors'] = {
