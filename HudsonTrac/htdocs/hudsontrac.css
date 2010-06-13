@@ -21,3 +21,18 @@ ul.builds li a {
  background-repeat: no-repeat;
  padding: 0 14px 0 0;
 }
+
+div#hudson-callout {
+ border: 2px #ddd ridge;
+ padding: .2em 1em;
+}
+#hudson-callout dt {
+ position: absolute;
+ width: 7em;
+ padding-right: .5em;
+ text-align: right;
+ font-weight: bold;
+}
+#hudson-callout dd {
+ margin-left: 8em;
+}

@@ -27,7 +27,7 @@ from trac.util.datefmt import format_datetime, pretty_timedelta, to_timestamp
 from trac.util.text import unicode_quote
 from trac.util.translation import domain_functions
 from trac.web.chrome import INavigationContributor, ITemplateProvider, \
-                            IRequestHandler, add_stylesheet
+                            IRequestHandler, add_script, add_stylesheet
 from trac.timeline.api import ITimelineEventProvider
 
 add_domain, _, tag_ = domain_functions('hudsontrac', 'add_domain', '_', 'tag_')
@@ -241,7 +241,8 @@ class HudsonTracPlugin(Component):
         stop = datetime.now(req.tz)
         start = stop - timedelta(days=30)
         builds = self._extract_builds(self._get_info(start, stop))
-        data = {'builds': builds}
+        data = {'builds': list(builds)}
+        add_script(req, 'HudsonTrac/hudsontrac.js')
         add_stylesheet(req, 'HudsonTrac/hudsontrac.css')
         return 'hudson-build.html', data, None
 
