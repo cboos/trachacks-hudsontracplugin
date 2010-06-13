@@ -30,7 +30,8 @@ from trac.web.chrome import INavigationContributor, ITemplateProvider, \
                             IRequestHandler, add_script, add_stylesheet
 from trac.timeline.api import ITimelineEventProvider
 
-add_domain, _, tag_ = domain_functions('hudsontrac', 'add_domain', '_', 'tag_')
+add_domain, _, tag_ = domain_functions('hudsontrac',
+                                       ('add_domain', '_', 'tag_'))
 
 class Build(dict):
     def __getattr__(self, name):
