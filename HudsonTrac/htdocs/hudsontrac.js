@@ -13,18 +13,26 @@ jQuery(document).ready(function($) {
     mouseenter: function(event) {
       if (!callout) {
         callout = $("<div id='hudson-callout'>")
-          .css({position: "absolute", background: "#fdfdaa"})
+          .css({position: "absolute", background: "#fdfdbb"})
           .appendTo("body");
       }
-      var build = BUILDS_BY_URLS[$(this)[0].href];
+      var a = $(this)[0];
+      var build = BUILDS_BY_URLS[a.href];
+      if (!build.date) {
+        build.date = $(a).attr("title") || "-";
+        $(a).removeAttr("title");
+      }
+
       callout
         .css({display: "block",
               left: parseInt(event.pageX) + 16 + "px",
               top: parseInt(event.pageY) - 16 + "px"})
         .append($("<p>").text(build.message))
         .append($("<dl>")
-          .append($("<dt>").text(_("Name:")))
+          .append($("<dt>").text(_("Build:")))
           .append($("<dd>").text(build.name))
+          .append($("<dt>").text(_("Date:")))
+          .append($("<dd>").text(build.date))
           .append($("<dt>").text(_("Author:")))
           .append($("<dd>").text(build.author))
         );
