@@ -18,7 +18,7 @@ if cmdclass:
 
 setup(
     name = 'HudsonTrac',
-    version = '0.12.0.5',
+    version = '0.12.0.6',
     author = "Ronald Tschalär",
     description = "Trac Plugin which adds Hudson build events to the timeline",
     maintainer = "Christian Boos",

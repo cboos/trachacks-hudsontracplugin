@@ -1,0 +1,31 @@
+# French translations for HudsonTrac.
+# Copyright (C) 2010 Christian Boos
+# This file is distributed under the same license as the HudsonTrac project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: HudsonTrac 0.12.0.4\n"
+"Report-Msgid-Bugs-To: cboos@neuf.fr\n"
+"POT-Creation-Date: 2010-06-13 18:43+0200\n"
+"PO-Revision-Date: 2010-07-26 10:11+0200\n"
+"Last-Translator: Christian Boos <cboos@neuf.fr>\n"
+"Language-Team: Trac french Team <trac-dev@googlegroups.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: HudsonTrac/htdocs/hudsontrac.js:30
+msgid "Build:"
+msgstr "Build :"
+
+#: HudsonTrac/htdocs/hudsontrac.js:32
+msgid "Date:"
+msgstr "Date :"
+
+#: HudsonTrac/htdocs/hudsontrac.js:34
+msgid "Author:"
+msgstr "Auteur :"
+

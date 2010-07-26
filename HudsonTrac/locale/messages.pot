@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: HudsonTrac 0.12.0.4\n"
+"Project-Id-Version: HudsonTrac 0.12.0.6\n"
 "Report-Msgid-Bugs-To: cboos@neuf.fr\n"
-"POT-Creation-Date: 2010-06-12 20:16+0200\n"
+"POT-Creation-Date: 2010-07-26 10:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,60 +18,60 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
 
-#: HudsonTrac/HudsonTracPlugin.py:191
+#: HudsonTrac/HudsonTracPlugin.py:192
 msgid "Build finished successfully"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:194
+#: HudsonTrac/HudsonTracPlugin.py:195
 msgid "Build unstable"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:195
+#: HudsonTrac/HudsonTracPlugin.py:196
 msgid "Build aborted"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:196
+#: HudsonTrac/HudsonTracPlugin.py:197
 msgid "Build in progress"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:197
+#: HudsonTrac/HudsonTracPlugin.py:198
 msgid "Build failed"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:223
+#: HudsonTrac/HudsonTracPlugin.py:224
 msgid "Build"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:252
+#: HudsonTrac/HudsonTracPlugin.py:256
 msgid "Hudson Builds"
-msgstr ""
-
-#: HudsonTrac/HudsonTracPlugin.py:270
-#, python-format
-msgid "Build %(name)s (%(result)s)"
 msgstr ""
 
 #: HudsonTrac/HudsonTracPlugin.py:274
 #, python-format
+msgid "Build %(name)s (%(result)s)"
+msgstr ""
+
+#: HudsonTrac/HudsonTracPlugin.py:278
+#, python-format
 msgid "%(message)s since %(elapsed)s"
 msgstr ""
 
-#: HudsonTrac/HudsonTracPlugin.py:277
+#: HudsonTrac/HudsonTracPlugin.py:281
 #, python-format
 msgid "%(message)s after %(elapsed)s"
 msgstr ""
 
 #: HudsonTrac/templates/hudson-build.html:11
-#: HudsonTrac/templates/hudson-build.html:15
+#: HudsonTrac/templates/hudson-build.html:18
 msgid "Hudson Build Summary"
 msgstr ""
 
-#: HudsonTrac/templates/hudson-build.html:17
+#: HudsonTrac/templates/hudson-build.html:20
 #, python-format
 msgid "Recent builds for: %(project)s"
 msgstr ""
 
-#: HudsonTrac/templates/hudson-build.html:27
+#: HudsonTrac/templates/hudson-build.html:30
 msgid "[1:Note:] Most recent builds are on the left side."
 msgstr ""
 
